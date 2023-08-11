@@ -12,6 +12,7 @@
         <module>week6-7</module>
         <module>week6-7/part05-multithreaded_downloader</module>
         <module>week8-9</module>
+        <module>week12-mybatis-learn</module>
     </modules>
 
     <properties>
