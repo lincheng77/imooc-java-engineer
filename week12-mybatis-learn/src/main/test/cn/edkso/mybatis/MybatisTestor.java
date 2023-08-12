@@ -1,5 +1,7 @@
 package cn.edkso.mybatis;
 
+import cn.edkso.entity.Goods;
+import cn.edkso.utils.MyBatisUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -8,6 +10,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * JUNIT单元测试类
@@ -40,4 +43,25 @@ public class MybatisTestor {
             }
         }
     }
+
+
+
+    /**
+     * select查询语句执行
+     * @throws Exception
+     */
+    @Test
+    public void testSelectAll() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSqlSession();
+            List<Goods> list = session.selectList("goods.selectAll");
+            list.forEach(e -> System.out.println(e));
+        }catch (Exception e){
+            throw e;
+        }finally {
+            MyBatisUtils.closeSqlSession(session);
+        }
+    }
+
 }

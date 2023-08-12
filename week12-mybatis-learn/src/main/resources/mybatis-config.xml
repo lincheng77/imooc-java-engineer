@@ -30,4 +30,8 @@
             </dataSource>
         </environment>
     </environments>
+
+    <mappers>
+        <mapper resource="mapper/goods.xml"/>
+    </mappers>
 </configuration>
