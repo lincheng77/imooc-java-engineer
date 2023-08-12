@@ -6,4 +6,44 @@
     <select id="selectAll" resultType="cn.edkso.entity.Goods" useCache="false">
         select * from t_goods order by goods_id desc limit 10
     </select>
+
+    <!-- 单参数传递,使用parameterType指定参数的数据类型即可,SQL中#{value}提取参数-->
+    <select id="selectById" parameterType="Integer" resultType="cn.edkso.entity.Goods">
+        select * from t_goods where  goods_id = #{value}
+    </select>
+
+    <!-- 多参数传递时,使用parameterType指定Map接口,SQL中#{key}提取参数 -->
+    <select id="selectByPriceRange" parameterType="java.util.Map" resultType="cn.edkso.entity.Goods">
+        select * from t_goods
+        where
+            current_price between  #{min} and #{max}
+        order by current_price
+        limit 0,#{limt}
+    </select>
+
+    <insert id="insert" parameterType="cn.edkso.entity.Goods" flushCache="true">
+        INSERT INTO t_goods(title, sub_title, original_cost, current_price, discount, is_free_delivery, category_id)
+        VALUES (#{title} , #{subTitle} , #{originalCost}, #{currentPrice}, #{discount}, #{isFreeDelivery}, #{categoryId})
+        <selectKey resultType="Integer" keyProperty="goodsId" order="AFTER">
+        select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="cn.edkso.entity.Goods">
+        UPDATE t_goods
+        SET
+            title = #{title} ,
+            sub_title = #{subTitle} ,
+            original_cost = #{originalCost} ,
+            current_price = #{currentPrice} ,
+            discount = #{discount} ,
+            is_free_delivery = #{isFreeDelivery} ,
+            category_id = #{categoryId}
+        WHERE
+            goods_id = #{goodsId}
+    </update>
+    <!--delete from t_goods where goods_id in (1920,1921)-->
+    <delete id="delete" parameterType="Integer">
+        delete from t_goods where goods_id = #{value}
+    </delete>
 </mapper>

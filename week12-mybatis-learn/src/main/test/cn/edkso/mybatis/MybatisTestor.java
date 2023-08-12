@@ -10,7 +10,9 @@ import org.junit.Test;
 
 import java.io.*;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * JUNIT单元测试类
@@ -54,13 +56,131 @@ public class MybatisTestor {
     public void testSelectAll() throws Exception {
         SqlSession session = null;
         try{
-            session = MyBatisUtils.openSqlSession();
+            session = MyBatisUtils.openSession();
             List<Goods> list = session.selectList("goods.selectAll");
             list.forEach(e -> System.out.println(e));
         }catch (Exception e){
             throw e;
         }finally {
-            MyBatisUtils.closeSqlSession(session);
+            MyBatisUtils.closeSession(session);
+        }
+    }
+
+    /**
+     * 传递单个SQL参数
+     * @throws Exception
+     */
+    @Test
+    public void testSelectById() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSession();
+            Goods goods = session.selectOne("goods.selectById" , 1603);
+            System.out.println(goods.getTitle());
+        }catch (Exception e){
+            throw e;
+        }finally {
+            MyBatisUtils.closeSession(session);
+        }
+    }
+
+    /**
+     * 传递多个SQL参数
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByPriceRange() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSession();
+            Map param = new HashMap();
+            param.put("min",100);
+            param.put("max" , 500);
+            param.put("limt" , 10);
+            List<Goods> list = session.selectList("goods.selectByPriceRange", param);
+            for(Goods g:list){
+                System.out.println(g.getTitle() + ":" + g.getCurrentPrice());
+
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            MyBatisUtils.closeSession(session);
+        }
+    }
+
+    /**
+     * 新增数据
+     * @throws Exception
+     */
+    @Test
+    public void testInsert() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSession();
+            Goods goods = new Goods();
+            goods.setTitle("测试商品");
+            goods.setSubTitle("测试子标题");
+            goods.setOriginalCost(200f);
+            goods.setCurrentPrice(100f);
+            goods.setDiscount(0.5f);
+            goods.setIsFreeDelivery(1);
+            goods.setCategoryId(43);
+            //insert()方法返回值代表本次成功插入的记录总数
+            int num = session.insert("goods.insert", goods);
+            session.commit();//提交事务数据
+            System.out.println(goods.getGoodsId());
+        }catch (Exception e){
+            if(session != null){
+                session.rollback();//回滚事务
+            }
+            throw e;
+        }finally {
+            MyBatisUtils.closeSession(session);
+        }
+    }
+
+    /**
+     * 更新数据
+     * @throws Exception
+     */
+    @Test
+    public void testUpdate() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSession();
+            Goods goods = session.selectOne("goods.selectById", 2675);
+            goods.setTitle("更新测试商品");
+            int num = session.update("goods.update" , goods);
+            session.commit();//提交事务数据
+        }catch (Exception e){
+            if(session != null){
+                session.rollback();//回滚事务
+            }
+            throw e;
+        }finally {
+            MyBatisUtils.closeSession(session);
+        }
+    }
+
+    /**
+     * 删除数据
+     * @throws Exception
+     */
+    @Test
+    public void testDelete() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSession();
+            int num = session.delete("goods.delete" , 739);
+            session.commit();//提交事务数据
+        }catch (Exception e){
+            if(session != null){
+                session.rollback();//回滚事务
+            }
+            throw e;
+        }finally {
+            MyBatisUtils.closeSession(session);
         }
     }
 
