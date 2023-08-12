@@ -46,4 +46,9 @@
     <delete id="delete" parameterType="Integer">
         delete from t_goods where goods_id = #{value}
     </delete>
+
+    <select id="selectByTitle" parameterType="java.util.Map" resultType="cn.edkso.entity.Goods">
+        select * from t_goods where title = #{title}
+            ${order}
+    </select>
 </mapper>

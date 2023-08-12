@@ -184,4 +184,38 @@ public class MybatisTestor {
         }
     }
 
+
+    /**
+     * 预防SQL注入
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByTitle() throws Exception {
+        SqlSession session = null;
+        try{
+            session = MyBatisUtils.openSession();
+            Map param = new HashMap();
+            /*
+                ${}原文传值
+                select * from t_goods
+                where title = '' or 1 =1 or title = '【德国】爱他美婴幼儿配方奶粉1段800g*2罐 铂金版'
+            */
+            /*
+               #{}预编译
+               select * from t_goods
+                where title = "'' or 1 =1 or title = '【德国】爱他美婴幼儿配方奶粉1段800g*2罐 铂金版'"
+            */
+
+            param.put("title","'' or 1=1 or title='【德国】爱他美婴幼儿配方奶粉1段800g*2罐 铂金版'");
+            param.put("order" , " order by title desc");
+            List<Goods> list = session.selectList("goods.selectByTitle", param);
+            for(Goods g:list){
+                System.out.println(g.getTitle() + ":" + g.getCurrentPrice());
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            MyBatisUtils.closeSession(session);
+        }
+    }
 }
