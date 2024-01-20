@@ -1,6 +1,6 @@
 package cn.edkso.impl;
 
-public interface INet {
+public interface INet extends Base1INet, Base2INet{
 
 
     public static final int TEMP = 20;//解释：接口中的变量默认是 public static final 的，所以可以省略不写
@@ -15,5 +15,11 @@ public interface INet {
 
     static void stop() {
         System.out.println("我是接口中的静态方法");
+    }
+
+    //接口中的方法如果重名，那么集成父接口的接口必须提供default重写的方法
+    //接口中的方法如果重名，那么实现接口的类必须自己实现该方法
+    default void test() {
+        System.out.println("我是test的默认方法");
     }
 }
